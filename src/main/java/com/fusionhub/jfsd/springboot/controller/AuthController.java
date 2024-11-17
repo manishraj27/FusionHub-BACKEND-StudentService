@@ -22,7 +22,7 @@ import com.fusionhub.jfsd.springboot.response.AuthResponse;
 import com.fusionhub.jfsd.springboot.service.CustomUserDetailsImpl;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 	
 	@Autowired

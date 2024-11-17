@@ -30,5 +30,5 @@ public class User {
 
 	
 	
-//	private int projectSize; //for subscription use
+	private int projectSize; //for subscription use
 }
