@@ -28,7 +28,12 @@ public class User {
 	@OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
 	private List<Issue> assignedIssues = new ArrayList<>();
 
-	
-	
+	@JsonIgnore
+	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Project> projects = new ArrayList<>();  // added initialization
+
+	@JsonIgnore
+	private String role = "USER";
+	 
 	private int projectSize; //for subscription use
 }
