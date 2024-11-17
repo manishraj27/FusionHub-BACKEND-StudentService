@@ -8,4 +8,3 @@
 
 ### FRONTEND
 - https://github.com/manishraj27/FusionHub-FRONTEND
-shraj27/FusionHub-FRONTEND.git
