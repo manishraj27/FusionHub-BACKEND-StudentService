@@ -22,6 +22,7 @@ public class User {
 	
 	private String fullName;
 	private String email;
+	@JsonIgnore
 	private String password;
 	
 	@JsonIgnore
@@ -34,6 +35,8 @@ public class User {
 
 	@JsonIgnore
 	private String role = "USER";
+	
+	private String status = "PENDING";
 	 
 	private int projectSize; //for subscription use
 }

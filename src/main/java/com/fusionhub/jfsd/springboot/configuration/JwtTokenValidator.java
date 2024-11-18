@@ -44,13 +44,13 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
                 
                 if (authorities != null && !authorities.isEmpty()) {
-                    // Extract the first authority
+                   
                     String role = authorities.get(0).get("authority");
                     
-
-                    System.out.println("Authorities: " + authorities);
-
-                    System.out.println("Extracted role: " + role);  // Log role
+//
+//                    System.out.println("Authorities: " + authorities);
+//
+//                    System.out.println("Extracted role: " + role);  //for checking
 
                     Authentication authentication;
                     if ("ADMIN".equalsIgnoreCase(role)) {
@@ -65,7 +65,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                         throw new BadCredentialsException("Invalid role in JWT token");
                     }
                     
-                    System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+ //                   System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
                 } else {
                     throw new BadCredentialsException("No authorities found in JWT token");
                 }
@@ -80,6 +80,6 @@ public class JwtTokenValidator extends OncePerRequestFilter {
             }
         }
 
-        filterChain.doFilter(request, response);  // Proceed with the filter chain
+        filterChain.doFilter(request, response);  
     }
 }

@@ -53,6 +53,7 @@ public class AuthController {
 	        createdUser.setEmail(user.getEmail());
 	        createdUser.setFullName(user.getFullName());
 	        createdUser.setRole("USER"); // Set default role as USER
+	        createdUser.setStatus("PENDING");
 	        
 	        User savedUser = userRepository.save(createdUser);
 	        
@@ -79,15 +80,27 @@ public class AuthController {
 	        String username = loginRequest.getEmail();
 	        String password = loginRequest.getPassword();
 	        
-	        Authentication authentication = authenticate(username, password);
-	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	        User user = userRepository.findByEmail(username);
+	        if (user == null) {
+	            throw new BadCredentialsException("Invalid username or password");
+	        }
+	        switch (user.getStatus().toUpperCase()) {
+	        case "PENDING":
+	            return new ResponseEntity<>(new AuthResponse(null, "Your account is pending approval"), HttpStatus.FORBIDDEN);
+	        case "REJECTED":
+	            return new ResponseEntity<>(new AuthResponse(null, "Your account has been rejected"), HttpStatus.FORBIDDEN);
+	        case "ACCEPTED":
+	            // Authenticate user
+	            Authentication authentication = authenticate(username, password);
+	            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+	            // Generate JWT
+	            String jwt = JwtProvider.generateToken(authentication);
+	            return new ResponseEntity<>(new AuthResponse(jwt, "signin success"), HttpStatus.OK);
+	        default:
+	            return new ResponseEntity<>(new AuthResponse(null, "Invalid account status"), HttpStatus.FORBIDDEN);
+	    }
 	        
-	        String jwt = JwtProvider.generateToken(authentication);
-	        AuthResponse res = new AuthResponse();
-	        res.setMessage("signin success");
-	        res.setJwt(jwt);
-	        
-	        return new ResponseEntity<>(res, HttpStatus.CREATED);
 	    }
 	
 
