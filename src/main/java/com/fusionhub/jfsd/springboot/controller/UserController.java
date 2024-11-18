@@ -30,7 +30,7 @@ public class UserController {
 
 
     @GetMapping
-//    @PreAuthorize("hasRole('ADMIN')") // i think this annotation is only for 
+    @PreAuthorize("hasRole('ADMIN')") // i think this annotation is only for 
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users);
