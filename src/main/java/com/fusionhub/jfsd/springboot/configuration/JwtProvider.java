@@ -1,6 +1,5 @@
 package com.fusionhub.jfsd.springboot.configuration;
 
-
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -18,6 +17,7 @@ public class JwtProvider {
 	public static String generateToken(Authentication auth) {
 		
 		String jwt = Jwts.builder().setIssuedAt(new Date())
+				.setIssuedAt(new Date())
 				.setExpiration(new Date(new Date().getTime()+86400000))
 				.claim("email", auth.getName())
 				.claim("role", "USER")

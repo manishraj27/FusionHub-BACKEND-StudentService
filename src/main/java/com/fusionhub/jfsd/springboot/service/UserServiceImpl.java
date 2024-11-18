@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User findUserProfileByJwt(String jwt) throws Exception {
 		String email = JwtProvider.getEmailFromToken(jwt);
-		
+		String role = JwtProvider.getRoleFromToken(jwt);
 		return findUserByEmail(email);
 	}
 
