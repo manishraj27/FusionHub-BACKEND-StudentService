@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fusionhub.jfsd.springboot.models.User;
 import com.fusionhub.jfsd.springboot.repository.UserRepository;
+import com.fusionhub.jfsd.springboot.response.MessageResponse;
 import com.fusionhub.jfsd.springboot.service.UserService;
 
 @RestController
@@ -29,15 +30,16 @@ public class UserController {
     private UserService userService;
 
 
+    
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')") // i think this annotation is only for 
+    @PreAuthorize("hasRole('ROLE_ADMIN')") // i think this annotation is FOR CORS IF I DONT PUT THIS ILL GET ERROR
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<User> getUserById(@PathVariable Long userId) {
         User requestedUser = userRepository.findById(userId).orElse(null);
         if (requestedUser == null) {
@@ -48,18 +50,24 @@ public class UserController {
 
 
     @DeleteMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN')") 
-    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<MessageResponse> deleteUser(@PathVariable Long userId) {
         if (!userRepository.existsById(userId)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+          
+            MessageResponse errorResponse = new MessageResponse("User not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
+        
+       
         userRepository.deleteById(userId);
-        return ResponseEntity.ok().build();
+        MessageResponse successResponse = new MessageResponse("Student deleted successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
+
     
     
     @PutMapping("/{userId}/status")  
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> updateUserStatus(
         @PathVariable Long userId,
         @RequestParam String status
