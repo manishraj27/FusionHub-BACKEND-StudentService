@@ -94,7 +94,7 @@ public class ProjectController {
 	@DeleteMapping("/{projectId}")
 	public ResponseEntity<MessageResponse>deleteProject(
 			@PathVariable Long projectId,
-			@RequestParam("Authorization")String jwt
+			@RequestHeader("Authorization")String jwt
 	)throws Exception {
 		User user =  userService.findUserProfileByJwt(jwt);
 		projectService.deleteProject(projectId, user.getId());
@@ -105,7 +105,7 @@ public class ProjectController {
 	@GetMapping("/search")
 	public ResponseEntity<List<Project>>searchProjects(
 			@RequestParam(required = false)String keyword,
-			@RequestParam("Authorization")String jwt
+			@RequestHeader("Authorization")String jwt
 	)throws Exception {
 		User user =  userService.findUserProfileByJwt(jwt);
 		List<Project> projects = projectService.searchProject(keyword, user);
@@ -115,7 +115,7 @@ public class ProjectController {
 	@GetMapping("/{projectId}/chat")
 	public ResponseEntity<Chat>getChatByProject(
 			@PathVariable Long projectId,
-			@RequestParam("Authorization")String jwt
+			@RequestHeader("Authorization")String jwt
 	)throws Exception {
 		User user =  userService.findUserProfileByJwt(jwt);
 		Chat chat = projectService.getChatByProjectId(projectId);

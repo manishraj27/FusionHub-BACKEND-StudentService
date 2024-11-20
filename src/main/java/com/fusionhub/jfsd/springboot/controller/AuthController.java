@@ -34,8 +34,7 @@ public class AuthController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-    @Autowired
-    private UserService userService;
+
     
 	@Autowired
 	private CustomUserDetailsImpl customUserDetailsImpl;
@@ -105,12 +104,7 @@ public class AuthController {
 	
 
     
-    @GetMapping("/profile")
-    public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String jwt) throws Exception{
-    	
-    	User user = userService.findUserProfileByJwt(jwt);
-    	return new ResponseEntity<>(user, HttpStatus.OK);
-    }
+   
     
 	private Authentication authenticate(String username, String password)
 	{

@@ -12,5 +12,5 @@ public interface UserService
 	
 	User updateUsersProjectSize(User user, int number);
 	
-	
+	User saveUser(User user);
 }

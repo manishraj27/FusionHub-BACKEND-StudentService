@@ -42,6 +42,12 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
+	
+	@Override
 	public User updateUsersProjectSize(User user, int number) {
 		user.setProjectSize(user.getProjectSize()+number);
 

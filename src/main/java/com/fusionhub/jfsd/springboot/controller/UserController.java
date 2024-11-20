@@ -21,6 +21,7 @@ import com.fusionhub.jfsd.springboot.service.UserService;
 
 @RestController
 @RequestMapping("/adminapi/users")
+@PreAuthorize("hasRole('ROLE_ADMIN')") 
 public class UserController {
 
     @Autowired
@@ -32,14 +33,12 @@ public class UserController {
 
     
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')") // i think this annotation is FOR CORS IF I DONT PUT THIS ILL GET ERROR
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{userId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<User> getUserById(@PathVariable Long userId) {
         User requestedUser = userRepository.findById(userId).orElse(null);
         if (requestedUser == null) {
@@ -50,7 +49,6 @@ public class UserController {
 
 
     @DeleteMapping("/{userId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> deleteUser(@PathVariable Long userId) {
         if (!userRepository.existsById(userId)) {
           
@@ -67,7 +65,6 @@ public class UserController {
     
     
     @PutMapping("/{userId}/status")  
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> updateUserStatus(
         @PathVariable Long userId,
         @RequestParam String status
