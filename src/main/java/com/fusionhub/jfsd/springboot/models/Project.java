@@ -34,7 +34,8 @@ public class Project {
 	@OneToOne(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Chat chat;
 	
-	@ManyToOne(cascade = CascadeType.PERSIST)
+//	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne
 	private User owner;
 	
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)

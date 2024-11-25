@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fusionhub.jfsd.springboot.models.Chat;
+import com.fusionhub.jfsd.springboot.models.Invitation;
 import com.fusionhub.jfsd.springboot.models.Project;
 import com.fusionhub.jfsd.springboot.models.User;
+import com.fusionhub.jfsd.springboot.request.InviteRequest;
 import com.fusionhub.jfsd.springboot.response.MessageResponse;
+import com.fusionhub.jfsd.springboot.service.InvitationService;
 import com.fusionhub.jfsd.springboot.service.ProjectService;
 import com.fusionhub.jfsd.springboot.service.UserService;
 
@@ -33,9 +36,10 @@ public class ProjectController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private InvitationService invitationService;
 	@PostMapping
 	public ResponseEntity<Project> createProject(
-//		@PathVariable Long projectId;
 	    @RequestHeader("Authorization") String jwt,
 	    @RequestBody Project project
 	) throws Exception {
@@ -67,22 +71,12 @@ public class ProjectController {
 		Project project = projectService.getProjectById(projectId);
 		return new ResponseEntity<>(project, HttpStatus.OK);
 	}
-	
-//	@PostMapping
-//	public ResponseEntity<Project>getProjectBy(
-//			@PathVariable Long projectId,
-//			@RequestParam("Authorization")String jwt,
-//			@RequestBody Project project
-//	)throws Exception {
-//		User user =  userService.findUserProfileByJwt(jwt);
-//		Project createdProject = projectService.createProject(project, user);
-//		return new ResponseEntity<>(createdProject, HttpStatus.OK);
-//	}
+
 	
 	@PatchMapping("/{projectId}")
 	public ResponseEntity<Project>updateProject(
 			@PathVariable Long projectId,
-			@RequestParam("Authorization")String jwt,
+			@RequestHeader("Authorization")String jwt,
 			@RequestBody Project project
 	)throws Exception {
 		User user =  userService.findUserProfileByJwt(jwt);
@@ -120,6 +114,28 @@ public class ProjectController {
 		User user =  userService.findUserProfileByJwt(jwt);
 		Chat chat = projectService.getChatByProjectId(projectId);
 		return new ResponseEntity<>(chat, HttpStatus.OK);
+	}
+	
+	@PostMapping("/invite")
+	public ResponseEntity<MessageResponse>inviteProject(
+		@RequestBody InviteRequest req,
+		@RequestHeader("Authorization") String jwt
+	) throws Exception {
+	    User user = userService.findUserProfileByJwt(jwt);
+	    invitationService.sendInvitation(req.getEmail(), req.getProjectId());
+	    MessageResponse res = new MessageResponse("User Invitaion Sent");
+	   return new ResponseEntity<>(res, HttpStatus.OK);
+	}
+	
+	@GetMapping("/accept_invitation")
+	public ResponseEntity<Invitation>acceptInviteProject(
+		@RequestParam String token,
+		@RequestHeader("Authorization") String jwt
+	) throws Exception {
+	    User user = userService.findUserProfileByJwt(jwt);
+	    Invitation invitation =  invitationService.acceptInvitation(token, user.getId());
+	    projectService.addUserToProject(invitation.getProjectId(), user.getId());
+	   return new ResponseEntity<>(invitation, HttpStatus.ACCEPTED);
 	}
 }
  

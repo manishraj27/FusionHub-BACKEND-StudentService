@@ -1,4 +1,4 @@
-package com.fusionhub.jfsd.springboot.models;
+package com.fusionhub.jfsd.springboot.DTO;
 
 import java.util.List;
 

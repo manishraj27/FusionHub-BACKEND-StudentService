@@ -24,6 +24,8 @@ public class User {
 	
 	private String fullName;
 	private String email;
+	
+	@JsonIgnore
 	private String password;
 	
 	@JsonIgnore
@@ -47,7 +49,7 @@ public class User {
     private String githubLink;
     private String linkedinLink;
     private String twitterLink;
-    @ElementCollection
+    //@ElementCollection
     private List<String> skills = new ArrayList<>();
     
     

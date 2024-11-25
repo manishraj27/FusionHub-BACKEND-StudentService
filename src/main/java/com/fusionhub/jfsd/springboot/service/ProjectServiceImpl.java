@@ -107,7 +107,7 @@ public class ProjectServiceImpl implements ProjectService {
 	public void removeUserFromProject(Long projectId, Long userId) throws Exception {
 		Project project = getProjectById(projectId);
 		User user=userService.findUserById(userId);
-		if(!project.getTeam().contains(user)){
+		if(project.getTeam().contains(user)){
 		project.getChat().getUsers().remove(user);
 		project. getTeam().remove(user);
 		}
@@ -130,4 +130,6 @@ public class ProjectServiceImpl implements ProjectService {
 		
 	}
 
+	
+	
 }

@@ -41,7 +41,7 @@ public class Issue {
 	private Project project;
 	
 	@JsonIgnore //jsonignore dont fetch : to solve this recursion problem
-	@OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true) //dont create seperate table for comment
 	private List<Comment> comments = new ArrayList<>();
 	
 }

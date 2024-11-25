@@ -12,7 +12,7 @@ import com.fusionhub.jfsd.springboot.models.User;
 public interface ProjectRepository extends JpaRepository<Project, Long>
 {
 //	List<Project>findByOwner(User user);
-	
+
 	List<Project> findByNameContainingAndTeamContains(String partialName, User user);
 	
 	

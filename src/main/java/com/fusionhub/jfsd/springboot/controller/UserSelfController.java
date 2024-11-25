@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fusionhub.jfsd.springboot.DTO.UserProfileUpdateDTO;
 import com.fusionhub.jfsd.springboot.models.User;
-import com.fusionhub.jfsd.springboot.models.UserProfileUpdateDTO;
 import com.fusionhub.jfsd.springboot.service.UserService;
 
 @RestController
@@ -31,8 +31,7 @@ public class UserSelfController {
 	  @PutMapping("/profile")
 	    public ResponseEntity<User> updateUserProfile(@RequestHeader("Authorization") String jwt, @RequestBody UserProfileUpdateDTO updateDTO) throws Exception {
 	        User user = userService.findUserProfileByJwt(jwt);
-	        
-	        // Update the profile fields
+
 	        user.setUniversity(updateDTO.getUniversity());
 	        user.setCompany(updateDTO.getCompany());
 	        user.setAboutMe(updateDTO.getAboutMe());
@@ -41,7 +40,7 @@ public class UserSelfController {
 	        user.setTwitterLink(updateDTO.getTwitterLink());
 	        user.setSkills(updateDTO.getSkills());
 	        
-	        // Save updated user
+	    
 	        User updatedUser = userService.saveUser(user);
 	        
 	        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
