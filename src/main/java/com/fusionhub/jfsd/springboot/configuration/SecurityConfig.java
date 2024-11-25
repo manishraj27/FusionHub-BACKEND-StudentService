@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/portfolio/public/**").permitAll()
                 .requestMatchers("/api/**").hasAuthority("ROLE_USER")
                 .requestMatchers("/adminapi/users/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().permitAll())

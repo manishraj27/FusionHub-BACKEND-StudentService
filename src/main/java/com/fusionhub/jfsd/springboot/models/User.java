@@ -7,12 +7,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 
 @Entity
@@ -36,6 +36,10 @@ public class User {
 	@OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private List<Project> projects = new ArrayList<>();  // added initialization
 
+	@JsonIgnore
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = true)
+	private Portfolio portfolio;
+	
 	@JsonIgnore
 	private String role = "USER";
 	
