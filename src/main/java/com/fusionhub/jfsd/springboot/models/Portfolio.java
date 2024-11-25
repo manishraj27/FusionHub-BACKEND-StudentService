@@ -1,24 +1,20 @@
 package com.fusionhub.jfsd.springboot.models;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
 public class Portfolio {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String name;
     private String about;
+    private String theme = "default"; // Add theme attribute with a default value
 
     @JsonIgnore
     @OneToOne
@@ -28,8 +24,9 @@ public class Portfolio {
     @ElementCollection
     private List<String> skills;
 
+    // Change this to store project IDs instead of project names
     @ElementCollection
-    private List<String> projects;
+    private List<Long> projectIds;
 
     @ElementCollection
     private List<String> experiences;

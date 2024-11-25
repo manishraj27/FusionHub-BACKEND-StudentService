@@ -2,6 +2,8 @@ package com.fusionhub.jfsd.springboot.controller;
 
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fusionhub.jfsd.springboot.DTO.PortfolioRequestDto;
+import com.fusionhub.jfsd.springboot.DTO.ProjectDTO;
 import com.fusionhub.jfsd.springboot.models.Portfolio;
 import com.fusionhub.jfsd.springboot.models.User;
 import com.fusionhub.jfsd.springboot.service.PortfolioService;
@@ -49,16 +52,29 @@ public class PortfolioController {
         }
     }
 
-    // Get portfolio by unique username (no JWT required here)
+//    // Get portfolio by unique username (no JWT required here)
+//    @GetMapping("/public/{uniqueUsername}")
+//    public ResponseEntity<Portfolio> getPortfolioByUniqueUsername(
+//            @PathVariable String uniqueUsername
+//    ) {
+//        try {
+//            Portfolio portfolio = portfolioService.getPortfolioByUniqueUsername(uniqueUsername);
+//            return new ResponseEntity<>(portfolio, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        }
+//    }
+    
     @GetMapping("/public/{uniqueUsername}")
-    public ResponseEntity<Portfolio> getPortfolioByUniqueUsername(
+    public ResponseEntity<?> getPortfolioProjects(
             @PathVariable String uniqueUsername
     ) {
         try {
             Portfolio portfolio = portfolioService.getPortfolioByUniqueUsername(uniqueUsername);
-            return new ResponseEntity<>(portfolio, HttpStatus.OK);
+            List<ProjectDTO> projects = portfolioService.getPortfolioProjects(portfolio);
+            return new ResponseEntity<>(projects, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
