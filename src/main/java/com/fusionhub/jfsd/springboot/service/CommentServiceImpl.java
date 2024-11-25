@@ -28,7 +28,7 @@ public class CommentServiceImpl implements CommentService {
 	
 	@Override
 	public Comment createComment(Long issueId, Long userId, String content) throws Exception {
-		Optional<Issue> issueOptional = issueRepository.findById(userId);
+		Optional<Issue> issueOptional = issueRepository.findById(issueId);
 		Optional<User> userOptional = userRepository.findById(userId);
 		
 		if(issueOptional.isEmpty()) {
