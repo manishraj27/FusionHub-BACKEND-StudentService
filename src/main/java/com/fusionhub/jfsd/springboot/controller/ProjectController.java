@@ -38,6 +38,7 @@ public class ProjectController {
 	
 	@Autowired
 	private InvitationService invitationService;
+	
 	@PostMapping
 	public ResponseEntity<Project> createProject(
 	    @RequestHeader("Authorization") String jwt,

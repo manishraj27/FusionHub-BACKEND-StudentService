@@ -22,6 +22,24 @@ public class PortfolioController {
     @Autowired
     private UserService userService;
 
+    @GetMapping
+    public ResponseEntity<?> getUserPortfolio(
+            @RequestHeader("Authorization") String jwt
+    ) {
+        try {
+            // Find the authenticated user using the JWT
+            User user = userService.findUserProfileByJwt(jwt);
+
+            // Fetch the user's portfolio
+            Portfolio portfolio = portfolioService.getPortfolioByUserId(user.getId());
+            return new ResponseEntity<>(portfolio, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    
+    
     @PostMapping
     public ResponseEntity<?> createOrUpdatePortfolio(
             @RequestHeader("Authorization") String jwt,
@@ -60,4 +78,8 @@ public class PortfolioController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+    
+
+   
+
 }

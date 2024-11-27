@@ -31,8 +31,10 @@ public class Portfolio {
     private List<Long> projectIds;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany
+    @JoinColumn(name = "portfolio_id") // This creates a foreign key in the Project table
     private List<Project> projects;
+
     
     @Transient // This annotation tells JPA not to persist this field in the database
     private List<ProjectDTO> projectDTOs;

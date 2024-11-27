@@ -25,7 +25,7 @@ public class User {
 	private String fullName;
 	private String email;
 	
-	@JsonIgnore
+//	@JsonIgnore
 	private String password;
 	
 	@JsonIgnore
@@ -36,9 +36,9 @@ public class User {
 	@OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private List<Project> projects = new ArrayList<>();  // added initialization
 
-	@JsonIgnore
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = true)
-	private Portfolio portfolio;
+//	@JsonIgnore
+//  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = true)
+//	private Portfolio portfolio;
 	
 	@JsonIgnore
 	private String role = "USER";

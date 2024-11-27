@@ -1,4 +1,3 @@
-// PortfolioServiceImpl.java
 package com.fusionhub.jfsd.springboot.service;
 
 import java.util.ArrayList;
@@ -23,8 +22,8 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Autowired
     private PortfolioRepository portfolioRepository;
 
-    @Autowired
-    private ProjectRepository projectRepository;
+//    @Autowired
+//    private ProjectRepository projectRepository;
 
     @Autowired
     private ProjectService projectService;
@@ -192,6 +191,8 @@ public class PortfolioServiceImpl implements PortfolioService {
         return portfolio;
     }
     
+   
+
     
     @Override
     public List<Portfolio> getAllPortfolios() {
@@ -238,6 +239,7 @@ public class PortfolioServiceImpl implements PortfolioService {
             PortfolioUrlDTO urlDTO = new PortfolioUrlDTO(
                 user.getId(),
                 user.getFullName(),
+                user.getEmail(),
                 portfolio.getUniqueUsername(),
                 baseUrl + portfolio.getUniqueUsername()
             );
