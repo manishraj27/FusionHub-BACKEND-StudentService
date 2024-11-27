@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -37,6 +38,12 @@ public class Project {
 //	@ManyToOne(cascade = CascadeType.PERSIST)
 	@ManyToOne
 	private User owner;
+	
+	
+//	@ManyToOne
+//    @JoinColumn(name = "portfolio_id") // This creates a foreign key in the Project table
+//    private Portfolio portfolio;
+	
 	
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Issue> issues = new ArrayList<>();

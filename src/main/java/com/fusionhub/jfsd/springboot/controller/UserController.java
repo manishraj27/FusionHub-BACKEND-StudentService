@@ -1,5 +1,8 @@
 package com.fusionhub.jfsd.springboot.controller;
 
+
+
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fusionhub.jfsd.springboot.DTO.PortfolioUrlDTO;
+import com.fusionhub.jfsd.springboot.models.Portfolio;
 import com.fusionhub.jfsd.springboot.models.User;
 import com.fusionhub.jfsd.springboot.repository.UserRepository;
 import com.fusionhub.jfsd.springboot.response.MessageResponse;
+import com.fusionhub.jfsd.springboot.service.PortfolioService;
 import com.fusionhub.jfsd.springboot.service.UserService;
 
 @RestController
@@ -30,6 +36,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+    @Autowired
+    private PortfolioService portfolioService;
 
     
     @GetMapping
@@ -87,5 +96,76 @@ public class UserController {
                 .body("Error updating user status");
         }
     }
-
+    
+ 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getPortfolioByUserId(@PathVariable Long userId) {
+        try {
+            Portfolio portfolio = portfolioService.getPortfolioByUserId(userId);
+            if (portfolio == null) {
+                return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new HashMap<String, String>() {{
+                        put("message", "No portfolio found for this user");
+                    }});
+            }
+            return ResponseEntity.ok(portfolio);
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new HashMap<String, String>() {{
+                    put("error", e.getMessage());
+                }});
+        }
+    }
+    
+    
+    @GetMapping("/allportfolios")
+    public ResponseEntity<?> getAllPortfolios() {
+        try {
+            List<Portfolio> portfolios = portfolioService.getAllPortfolios();
+            
+            if (portfolios.isEmpty()) {
+                return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new HashMap<String, String>() {{
+                        put("message", "No portfolios found");
+                    }});
+            }
+            
+            return ResponseEntity.ok(portfolios);
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new HashMap<String, String>() {{
+                    put("error", e.getMessage());
+                }});
+        }
+    }
+    
+    
+    @GetMapping("/portfolio/urls")
+    public ResponseEntity<?> getAllPortfolioUrls() {
+        try {
+            List<PortfolioUrlDTO> portfolioUrls = portfolioService.getAllPortfolioUrls();
+            
+            if (portfolioUrls.isEmpty()) {
+                return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new HashMap<String, String>() {{
+                        put("message", "No portfolio URLs found");
+                    }});
+            }
+            
+            return ResponseEntity.ok(portfolioUrls);
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new HashMap<String, String>() {{
+                    put("error", e.getMessage());
+                }});
+        }
+    }
+    
+    
 }

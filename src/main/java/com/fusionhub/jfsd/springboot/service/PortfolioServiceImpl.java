@@ -1,17 +1,21 @@
+// PortfolioServiceImpl.java
 package com.fusionhub.jfsd.springboot.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.fusionhub.jfsd.springboot.DTO.PortfolioRequestDto;
+import com.fusionhub.jfsd.springboot.DTO.PortfolioUrlDTO;
 import com.fusionhub.jfsd.springboot.DTO.ProjectDTO;
 import com.fusionhub.jfsd.springboot.models.Portfolio;
 import com.fusionhub.jfsd.springboot.models.Project;
 import com.fusionhub.jfsd.springboot.models.User;
 import com.fusionhub.jfsd.springboot.repository.PortfolioRepository;
 import com.fusionhub.jfsd.springboot.repository.ProjectRepository;
-import com.fusionhub.jfsd.springboot.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
@@ -20,31 +24,25 @@ public class PortfolioServiceImpl implements PortfolioService {
     private PortfolioRepository portfolioRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private ProjectRepository projectRepository;
 
     @Autowired
-    private ProjectRepository projectRepository;
+    private ProjectService projectService;
 
     @Override
     public Portfolio createOrUpdatePortfolio(User user, PortfolioRequestDto portfolioRequestDto) throws Exception {
-        // Check if unique username already exists
         Portfolio existingPortfolioWithUsername = portfolioRepository.findByUniqueUsername(portfolioRequestDto.getUniqueUsername());
         Portfolio currentUserPortfolio = portfolioRepository.findByUser(user);
 
-        // If another user already has this unique username
         if (existingPortfolioWithUsername != null && 
             (currentUserPortfolio == null || !existingPortfolioWithUsername.getId().equals(currentUserPortfolio.getId()))) {
             throw new Exception("Unique username already exists");
         }
 
-        // Check if the user already has a portfolio
-        Portfolio portfolio = currentUserPortfolio;
-        if (portfolio == null) {
-            portfolio = new Portfolio();
-            portfolio.setUser(user);
-        }
+        Portfolio portfolio = Optional.ofNullable(currentUserPortfolio).orElse(new Portfolio());
+        portfolio.setUser(user);
 
-        // Update the portfolio with the provided details from the DTO
+        // Update basic fields
         portfolio.setName(portfolioRequestDto.getName());
         portfolio.setAbout(portfolioRequestDto.getAbout());
         portfolio.setTheme(portfolioRequestDto.getTheme() != null ? portfolioRequestDto.getTheme() : "default");
@@ -57,8 +55,38 @@ public class PortfolioServiceImpl implements PortfolioService {
         portfolio.setEmail(portfolioRequestDto.getEmail());
         portfolio.setUniqueUsername(portfolioRequestDto.getUniqueUsername());
 
-        // Save the portfolio to the database
-        return portfolioRepository.save(portfolio);
+        // Save the portfolio first
+        portfolio = portfolioRepository.save(portfolio);
+
+        // Populate projects and projectDTOs
+        if (portfolio.getProjectIds() != null && !portfolio.getProjectIds().isEmpty()) {
+            List<Project> projects = new ArrayList<>();
+            List<ProjectDTO> projectDTOs = new ArrayList<>();
+            
+            for (Long projectId : portfolio.getProjectIds()) {
+                try {
+                    Project project = projectService.getProjectById(projectId);
+                    projects.add(project);
+                    
+                    ProjectDTO dto = new ProjectDTO(
+                        project.getId(),
+                        project.getName(),
+                        project.getDescription(),
+                        project.getCategory(),
+                        project.getTags()
+                    );
+                    projectDTOs.add(dto);
+                } catch (Exception e) {
+                    // Log error but continue processing other projects
+                    System.err.println("Error loading project ID " + projectId + ": " + e.getMessage());
+                }
+            }
+            
+            portfolio.setProjects(projects);
+            portfolio.setProjectDTOs(projectDTOs);
+        }
+
+        return portfolio;
     }
 
     @Override
@@ -67,34 +95,155 @@ public class PortfolioServiceImpl implements PortfolioService {
         if (portfolio == null) {
             throw new Exception("Portfolio not found");
         }
-        return portfolio;
-    }
 
-    @Override
-    public Portfolio getPortfolioByUserId(Long userId) throws Exception {
-        Portfolio portfolio = portfolioRepository.findByUserId(userId);
-        if (portfolio == null) {
-            throw new Exception("Portfolio not found");
+        // Populate projectDTOs
+        if (portfolio.getProjectIds() != null && !portfolio.getProjectIds().isEmpty()) {
+            List<ProjectDTO> projectDTOs = new ArrayList<>();
+            
+            for (Long projectId : portfolio.getProjectIds()) {
+                try {
+                    Project project = projectService.getProjectById(projectId);
+                    ProjectDTO dto = new ProjectDTO(
+                        project.getId(),
+                        project.getName(),
+                        project.getDescription(),
+                        project.getCategory(),
+                        project.getTags()
+                    );
+                    projectDTOs.add(dto);
+                } catch (Exception e) {
+                    // Log error but continue processing other projects
+                    System.err.println("Error loading project ID " + projectId + ": " + e.getMessage());
+                }
+            }
+            
+            portfolio.setProjectDTOs(projectDTOs);
         }
+
         return portfolio;
     }
 
     @Override
     public List<ProjectDTO> getPortfolioProjects(Portfolio portfolio) throws Exception {
-        if (portfolio.getProjectIds() == null || portfolio.getProjectIds().isEmpty()) {
-            return List.of();
+        if (portfolio == null) {
+            throw new Exception("Portfolio not found");
         }
 
-        List<Project> projects = projectRepository.findAllById(portfolio.getProjectIds());
+        if (portfolio.getProjectIds() == null || portfolio.getProjectIds().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<ProjectDTO> projectDTOs = new ArrayList<>();
+        for (Long projectId : portfolio.getProjectIds()) {
+            try {
+                Project project = projectService.getProjectById(projectId);
+                ProjectDTO dto = new ProjectDTO(
+                    project.getId(),
+                    project.getName(),
+                    project.getDescription(),
+                    project.getCategory(),
+                    project.getTags()
+                );
+                projectDTOs.add(dto);
+            } catch (Exception e) {
+                // Log error but continue processing other projects
+                System.err.println("Error loading project ID " + projectId + ": " + e.getMessage());
+            }
+        }
+
+        return projectDTOs;
+    }
+
+    @Override
+    public Portfolio getPortfolioByUserId(Long userId) throws Exception {
+        if (userId == null) {
+            throw new Exception("User ID cannot be null");
+        }
+
+        Portfolio portfolio = portfolioRepository.findByUserId(userId);
+        if (portfolio == null) {
+            throw new Exception("Portfolio not found for user ID: " + userId);
+        }
+
+        // Populate projectDTOs similar to other methods
+        if (portfolio.getProjectIds() != null && !portfolio.getProjectIds().isEmpty()) {
+            List<ProjectDTO> projectDTOs = new ArrayList<>();
+            
+            for (Long projectId : portfolio.getProjectIds()) {
+                try {
+                    Project project = projectService.getProjectById(projectId);
+                    ProjectDTO dto = new ProjectDTO(
+                        project.getId(),
+                        project.getName(),
+                        project.getDescription(),
+                        project.getCategory(),
+                        project.getTags()
+                    );
+                    projectDTOs.add(dto);
+                } catch (Exception e) {
+                    // Log error but continue processing other projects
+                    System.err.println("Error loading project ID " + projectId + ": " + e.getMessage());
+                }
+            }
+            
+            portfolio.setProjectDTOs(projectDTOs);
+        }
+
+        return portfolio;
+    }
+    
+    
+    @Override
+    public List<Portfolio> getAllPortfolios() {
+        List<Portfolio> portfolios = portfolioRepository.findAll();
         
-        return projects.stream().map(project -> {
-            ProjectDTO dto = new ProjectDTO();
-            dto.setId(project.getId());
-            dto.setName(project.getName());
-            dto.setDescription(project.getDescription());
-            dto.setCategory(project.getCategory());
-            dto.setTags(project.getTags());
-            return dto;
-        }).collect(Collectors.toList());
+        // Populate projectDTOs for each portfolio
+        for (Portfolio portfolio : portfolios) {
+            if (portfolio.getProjectIds() != null && !portfolio.getProjectIds().isEmpty()) {
+                List<ProjectDTO> projectDTOs = new ArrayList<>();
+                
+                for (Long projectId : portfolio.getProjectIds()) {
+                    try {
+                        Project project = projectService.getProjectById(projectId);
+                        ProjectDTO dto = new ProjectDTO(
+                            project.getId(),
+                            project.getName(),
+                            project.getDescription(),
+                            project.getCategory(),
+                            project.getTags()
+                        );
+                        projectDTOs.add(dto);
+                    } catch (Exception e) {
+                        System.err.println("Error loading project ID " + projectId + ": " + e.getMessage());
+                    }
+                }
+                
+                portfolio.setProjectDTOs(projectDTOs);
+            }
+        }
+        
+        return portfolios;
+    }
+    
+    
+    @Override
+    public List<PortfolioUrlDTO> getAllPortfolioUrls() {
+        List<Portfolio> portfolios = portfolioRepository.findAll();
+        List<PortfolioUrlDTO> portfolioUrls = new ArrayList<>();
+        
+        String baseUrl = "http://localhost:2000/api/portfolio/public/"; // You might want to make this configurable
+        
+        for (Portfolio portfolio : portfolios) {
+            User user = portfolio.getUser();
+            PortfolioUrlDTO urlDTO = new PortfolioUrlDTO(
+                user.getId(),
+                user.getFullName(),
+                portfolio.getUniqueUsername(),
+                baseUrl + portfolio.getUniqueUsername()
+            );
+            portfolioUrls.add(urlDTO);
+        }
+        
+        return portfolioUrls;
     }
 }

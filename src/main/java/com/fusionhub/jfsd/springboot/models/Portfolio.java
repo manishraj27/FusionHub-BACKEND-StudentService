@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fusionhub.jfsd.springboot.DTO.ProjectDTO;
 
 @Entity
 @Data
@@ -24,9 +25,17 @@ public class Portfolio {
     @ElementCollection
     private List<String> skills;
 
+    @JsonIgnore
     // Change this to store project IDs instead of project names
     @ElementCollection
     private List<Long> projectIds;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Project> projects;
+    
+    @Transient // This annotation tells JPA not to persist this field in the database
+    private List<ProjectDTO> projectDTOs;
 
     @ElementCollection
     private List<String> experiences;
