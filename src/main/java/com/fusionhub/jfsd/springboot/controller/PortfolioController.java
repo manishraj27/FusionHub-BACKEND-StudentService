@@ -52,20 +52,20 @@ public class PortfolioController {
         }
     }
 
-//    // Get portfolio by unique username (no JWT required here)
-//    @GetMapping("/public/{uniqueUsername}")
-//    public ResponseEntity<Portfolio> getPortfolioByUniqueUsername(
-//            @PathVariable String uniqueUsername
-//    ) {
-//        try {
-//            Portfolio portfolio = portfolioService.getPortfolioByUniqueUsername(uniqueUsername);
-//            return new ResponseEntity<>(portfolio, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-//        }
-//    }
-    
+    // Get portfolio by unique username (no JWT required here)
     @GetMapping("/public/{uniqueUsername}")
+    public ResponseEntity<Portfolio> getPortfolioByUniqueUsername(
+            @PathVariable String uniqueUsername
+    ) {
+        try {
+            Portfolio portfolio = portfolioService.getPortfolioByUniqueUsername(uniqueUsername);
+            return new ResponseEntity<>(portfolio, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    @GetMapping("/public/portfolio-projects/{uniqueUsername}")
     public ResponseEntity<?> getPortfolioProjects(
             @PathVariable String uniqueUsername
     ) {
