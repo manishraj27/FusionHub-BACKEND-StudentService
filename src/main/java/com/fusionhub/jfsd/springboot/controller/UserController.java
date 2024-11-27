@@ -98,7 +98,7 @@ public class UserController {
     }
     
  
-    @GetMapping("/user/{userId}")
+    @GetMapping("/portfolio/{userId}")
     public ResponseEntity<?> getPortfolioByUserId(@PathVariable Long userId) {
         try {
             Portfolio portfolio = portfolioService.getPortfolioByUserId(userId);
