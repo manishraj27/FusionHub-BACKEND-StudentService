@@ -25,7 +25,7 @@ public class Portfolio {
     @ElementCollection
     private List<String> skills;
 
-    @JsonIgnore
+    
     // Change this to store project IDs instead of project names
     @ElementCollection
     private List<Long> projectIds;
