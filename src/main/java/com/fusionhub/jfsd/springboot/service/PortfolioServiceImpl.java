@@ -232,7 +232,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         List<Portfolio> portfolios = portfolioRepository.findAll();
         List<PortfolioUrlDTO> portfolioUrls = new ArrayList<>();
         
-        String baseUrl = "http://localhost:2000/api/portfolio/public/"; // You might want to make this configurable
+        String baseUrl = "http://localhost:5173/share/"; // public frontend url
         
         for (Portfolio portfolio : portfolios) {
             User user = portfolio.getUser();
