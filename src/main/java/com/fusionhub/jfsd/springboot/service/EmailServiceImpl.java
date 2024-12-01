@@ -36,5 +36,28 @@ public class EmailServiceImpl implements EmailService {
 			throw new MailSendException("Failed to send email");
 		}
 	}
+	
+	@Override
+    public void sendPasswordResetEmail(String userEmail, String resetLink) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        
+        String subject = "FusionHub : Password Reset Request";
+        String text = "Click the link below to reset your password: <br/>" + 
+                     "<a href='" + resetLink + "'>" + resetLink + "</a><br/>" +
+                     "This link will expire in 24 hours.";
+
+        helper.setSubject(subject);
+        helper.setText(text, true);
+        helper.setTo(userEmail);
+        helper.setFrom("samaavibes@gmail.com");
+        
+        try {
+            javaMailSender.send(mimeMessage);
+        } catch (MailSendException e) {
+            e.printStackTrace();
+            throw new MailSendException("Failed to send password reset email");
+        }
+    }
 
 }
