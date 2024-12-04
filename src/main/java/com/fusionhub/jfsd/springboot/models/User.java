@@ -13,10 +13,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data //It is similar as generating getters and setters.
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,12 +37,16 @@ public class User {
 	private List<Issue> assignedIssues = new ArrayList<>();
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
 	private List<Project> projects = new ArrayList<>();  // added initialization
 
 //	@JsonIgnore
 //  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = true)
 //	private Portfolio portfolio;
+	
+	@JsonIgnore
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Portfolio portfolio;
 	
 	@JsonIgnore
 	private String role = "USER";
@@ -58,4 +66,12 @@ public class User {
     
     
 	private int projectSize; //for subscription use
+
+	  public User(String email, String fullName, String role, String status) {
+	        this.email = email;
+	        this.fullName = fullName;
+	        this.role = role;
+	        this.status=status;
+	    }
+
 }
