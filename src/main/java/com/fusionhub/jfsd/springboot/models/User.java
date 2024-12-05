@@ -64,14 +64,16 @@ public class User {
     //@ElementCollection
     private List<String> skills = new ArrayList<>();
     
+    private String provider = "FusionHub";
     
 	private int projectSize; //for subscription use
 
-	  public User(String email, String fullName, String role, String status) {
+	  public User(String email, String fullName, String role, String status, String provider) {
 	        this.email = email;
 	        this.fullName = fullName;
 	        this.role = role;
 	        this.status=status;
+	        this.provider=provider;
 	    }
 
 }
