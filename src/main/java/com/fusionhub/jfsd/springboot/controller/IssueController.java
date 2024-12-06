@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fusionhub.jfsd.springboot.DTO.IssueDTO;
 import com.fusionhub.jfsd.springboot.models.Issue;
-import com.fusionhub.jfsd.springboot.models.IssueDTO;
 import com.fusionhub.jfsd.springboot.models.User;
 import com.fusionhub.jfsd.springboot.request.IssueRequest;
 import com.fusionhub.jfsd.springboot.response.MessageResponse;

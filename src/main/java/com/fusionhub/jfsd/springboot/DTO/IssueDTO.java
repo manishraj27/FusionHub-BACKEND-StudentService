@@ -1,8 +1,11 @@
-package com.fusionhub.jfsd.springboot.models;
+package com.fusionhub.jfsd.springboot.DTO;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fusionhub.jfsd.springboot.models.Project;
+import com.fusionhub.jfsd.springboot.models.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
