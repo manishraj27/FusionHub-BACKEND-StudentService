@@ -33,9 +33,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		User user = userRepository.findByEmail(email);
 
 		if (user == null) {
-			user = new User(email, name, "USER", "ACCEPTED", "Google"); // Create a new user if not found
-			user = userRepository.save(user); // Save the new user
-		}
+	        // Create a new user with status as "ACCEPTED" if not found
+	        user = new User(email, name, "USER", "ACCEPTED", "Google");
+	        user = userRepository.save(user);
+	    } else if (!"ACCEPTED".equals(user.getStatus())) {
+	        // If user exists and status is not ACCEPTED, throw an exception
+	        throw new OAuth2AuthenticationException("Your account is " + user.getStatus());
+	    }
 
 		return new CustomOAuth2User(oauth2User, user);
 	}
