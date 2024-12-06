@@ -44,9 +44,9 @@ public class User {
 //  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = true)
 //	private Portfolio portfolio;
 	
-	@JsonIgnore
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Portfolio portfolio;
+//	@JsonIgnore
+//	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//	private Portfolio portfolio;
 	
 	@JsonIgnore
 	private String role = "USER";
