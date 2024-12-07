@@ -25,7 +25,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String token = JwtProvider.generateToken(authentication);
         
         // Redirect to frontend with token
-        String redirectUrl = "http://localhost:5173/oauth2/callback?token=" + token;
+        String redirectUrl = "https://fusionhub.netlify.app/oauth2/callback?token=" + token;
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 }

@@ -23,7 +23,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
         String encodedError = java.net.URLEncoder.encode(errorMessage, "UTF-8");
         
         // Redirect to frontend with error message
-        String redirectUrl = "http://localhost:5173/oauth2/callback?error=" + encodedError;
+        String redirectUrl = "https://fusionhub.netlify.app/oauth2/callback?error=" + encodedError;
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 }
