@@ -44,7 +44,7 @@ public class Project {
 //    @JoinColumn(name = "portfolio_id") // This creates a foreign key in the Project table
 //    private Portfolio portfolio;
 	
-	
+	@JsonIgnore
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Issue> issues = new ArrayList<>();
 	
