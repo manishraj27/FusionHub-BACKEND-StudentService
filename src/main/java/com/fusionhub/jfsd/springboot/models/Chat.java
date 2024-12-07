@@ -29,6 +29,7 @@ public class Chat {
 	
 	private String name;
 	
+	@JsonIgnore
 	@OneToOne
 	private Project project;
 	
