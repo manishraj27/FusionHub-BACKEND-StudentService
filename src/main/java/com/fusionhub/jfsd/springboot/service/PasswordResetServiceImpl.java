@@ -46,7 +46,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 		tokenRepository.save(passwordResetToken);
 
 		// Send email with reset link
-		String resetLink = "http://localhost:5173/reset-password?token=" + token;
+		String resetLink = "https://fusionhub.netlify.app/reset-password?token=" + token;
 		emailService.sendPasswordResetEmail(email, resetLink);
 	}
 
